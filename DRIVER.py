@@ -12,4 +12,4 @@ def main():
 
 main()
 
-#lol
+#Test: Amend misspelled commit message
