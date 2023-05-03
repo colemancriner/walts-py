@@ -197,6 +197,22 @@ def walmart():
 #==============================================================================
 #==============================================================================
 #==============================================================================
+# Walmart listing counts
+def ebay():
+    
+    # Read in Active Listings Report
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\eBay-all-active-listings-report*.csv'
+    file_path = glob.glob(file_pattern)[0]
+    df = pd.read_csv(file_path)
+
+    df = df[(df['Condition']=='NEW') &
+            (df['Available quantity']>0)]
+    df_counts = len(df)
+    return pd.DataFrame({'eBay': [df_counts]})
+#==============================================================================
+#==============================================================================
+#==============================================================================
+
 # MAIN FUNCTION
 def main():
 
@@ -204,6 +220,7 @@ def main():
     amz_main_counts = None
     amz_home_counts = None
     wm_counts = None
+    ebay_counts = None
 
     # Amazon Main Listing Counts
     try:
@@ -222,15 +239,25 @@ def main():
         wm_counts = walmart()
     except Exception as err:
         print(str(err))
-        
+    
+    # eBay Listing Counts
+    try:
+        ebay_counts = ebay()
+    except Exception as err:
+        print(str(err))
+
+
     # Combine DataFrames
     df = pd.DataFrame({})
     if len(amz_main_counts)>0:
         df = pd.concat([df,amz_main_counts], axis=1)
     if len(amz_home_counts)>0:
         df = pd.concat([df,amz_home_counts], axis=1)
-    if len(amz_main_counts)>0:
+    if len(wm_counts)>0:
         df = pd.concat([df,wm_counts], axis=1)
+    if len(ebay_counts)>0:
+        df = pd.concat([df,ebay_counts], axis=1)
+    
     df.to_csv('C:\\Users\\ccrin\\Desktop\\MPListingCounts.csv', index=None)
 
     print('MAIN DRIVER')
