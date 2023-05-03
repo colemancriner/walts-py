@@ -4,7 +4,7 @@ import glob
 
 # Amazon Main listing counts
 def amazon_main():
-    file_pattern = 'C:\\Users\\ccrin\\Downloads\\Amazon Main All+Listings+Report+*.txt'
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\Amazon Main All+Listings+Report+*.txt'
     file_path = glob.glob(file_pattern)[0]
 
     df = pd.read_csv(file_path, delimiter='\t')
@@ -122,7 +122,7 @@ def amazon_main():
 #==============================================================================
 # Amazon Home listing counts
 def amazon_home():
-    file_pattern = 'C:\\Users\\ccrin\\Downloads\\Amazon Home All+Listings+Report+*.txt'
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\Amazon Home All+Listings+Report+*.txt'
     file_path = glob.glob(file_pattern)[0]
 
     df = pd.read_csv(file_path, delimiter='\t')
@@ -170,40 +170,41 @@ def amazon_home():
 def walmart():
     
     # Read in Item Report
-    file_pattern = 'C:\\Users\\ccrin\\Documents\\Python Scripts\\dailyTasks\\docs\\WM Item Report*.csv'
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\WM Item Report*.csv'
     file_path = glob.glob(file_pattern)[0]
     df_item = pd.read_csv(file_path)
     
     # Read in Inventory Report
-    file_pattern = 'C:\\Users\\ccrin\\Documents\\Python Scripts\\dailyTasks\\docs\\WM Inventory Report*.csv'
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\WM Inventory Report*.csv'
     file_path = glob.glob(file_pattern)[0]
     df_inventory = pd.read_csv(file_path)
     
     #======================================================================
     
     # Clean DataFrames and join
-    df_inventory = df_inventory.groupby('SKU')['AvailToSell Quantity'].sum()
-    df_inventory = df_inventory.rename(columns={'AvailToSell Quantity': 'QuantityIR'})
+    df_inventory = df_inventory.groupby('SKU')['AvailToSell Quantity'].agg([sum,max,min])
+    df_inventory = df_inventory.rename(columns={'sum': 'Quantity'})
     
-    df = df_item.set_index('SKU').join(df_inventory.set_index('SKU'), how='inner')
-    
+    df = df_item.join(df_inventory, on='SKU', how='inner')
     df = df[(df['Quantity']>=1) &
             (df['Publish Status']=='PUBLISHED') &
             (df['Lifecycle Status']=='ACTIVE')]
+    df_bundles = len(df[df['SKU'].str.contains('BNDL_')])
+    df_standalone = len(df[(~df['SKU'].str.contains('BNDL_'))])
     return pd.DataFrame({
-        'Walmart - Bundles': [df[df['SKU'].str.contains('BNDL_')].count()],
-        'Walmart - Standalone': [df[(~df['SKU'].str.contains('BNDL_'))].count()]})
+        'Walmart - Bundles': [df_bundles],
+        'Walmart - Standalone': [df_standalone]})
 #==============================================================================
 #==============================================================================
 #==============================================================================
 # MAIN FUNCTION
 def main():
-    amz_main_counts = amazon_main()
-    amz_home_counts = amazon_home()
-    #wm_counts = walmart()
-
-    amz_all_counts = pd.concat([amz_main_counts,amz_home_counts], axis=1)
-    amz_all_counts.to_csv('C:\\Users\\ccrin\\Documents\\script_files\\AmzListingCounts.csv', index=None)
+    #amz_main_counts = amazon_main()
+    #amz_home_counts = amazon_home()
+    wm_counts = walmart()
+    wm_counts.to_csv('C:\\Users\\ccrin\\Desktop\\WMListingCounts.csv', index=None)
+    #amz_all_counts = pd.concat([amz_main_counts,amz_home_counts], axis=1)
+    #amz_all_counts.to_csv('C:\\Users\\ccrin\\Desktop\\AmzListingCounts.csv', index=None)
 
     print('MAIN DRIVER')
 
