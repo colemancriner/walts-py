@@ -199,12 +199,39 @@ def walmart():
 #==============================================================================
 # MAIN FUNCTION
 def main():
-    #amz_main_counts = amazon_main()
-    #amz_home_counts = amazon_home()
-    wm_counts = walmart()
-    wm_counts.to_csv('C:\\Users\\ccrin\\Desktop\\WMListingCounts.csv', index=None)
-    #amz_all_counts = pd.concat([amz_main_counts,amz_home_counts], axis=1)
-    #amz_all_counts.to_csv('C:\\Users\\ccrin\\Desktop\\AmzListingCounts.csv', index=None)
+
+    # Define variables
+    amz_main_counts = None
+    amz_home_counts = None
+    wm_counts = None
+
+    # Amazon Main Listing Counts
+    try:
+        amz_main_counts = amazon_main()
+    except Exception as err:
+        print(str(err))
+
+    # Amazon Home Listing Counts
+    try:
+        amz_home_counts = amazon_home()
+    except Exception as err:
+        print(str(err))
+
+    # Walmart Listing Counts
+    try:
+        wm_counts = walmart()
+    except Exception as err:
+        print(str(err))
+        
+    # Combine DataFrames
+    df = pd.DataFrame({})
+    if len(amz_main_counts)>0:
+        df = pd.concat([df,amz_main_counts], axis=1)
+    if len(amz_home_counts)>0:
+        df = pd.concat([df,amz_home_counts], axis=1)
+    if len(amz_main_counts)>0:
+        df = pd.concat([df,wm_counts], axis=1)
+    df.to_csv('C:\\Users\\ccrin\\Desktop\\MPListingCounts.csv', index=None)
 
     print('MAIN DRIVER')
 
@@ -214,8 +241,8 @@ def main():
 
 
 #==========================================================================================
-#==============================================================================
-#==============================================================================
+#==========================================================================================
+#==========================================================================================
 
 
 main()
