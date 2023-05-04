@@ -197,7 +197,7 @@ def walmart():
 #==============================================================================
 #==============================================================================
 #==============================================================================
-# Walmart listing counts
+# eBay listing counts
 def ebay():
     
     # Read in Active Listings Report
@@ -212,39 +212,105 @@ def ebay():
 #==============================================================================
 #==============================================================================
 #==============================================================================
+# Newegg listing counts
+def newegg():
+    
+    # Read in Item List Export
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\NE Item List*.csv'
+    file_path = glob.glob(file_pattern)[0]
+    df = pd.read_csv(file_path)
+    
+    # Newegg Standalone
+    df_standalone = df[(df['Activation Mark']==True) &
+            (df['Available Quantity']>0) &
+            (df['Item Condition']=='New') &
+            (~df['Seller Part #'].str.contains('BNDL_'))]
+    standalone_counts = len(df_standalone)
+    # Newegg Bundles
+    df_bundles = df[(df['Activation Mark']==True) &
+            (df['Available Quantity']>0) &
+            (df['Item Condition']=='New') &
+            (df['Seller Part #'].str.contains('BNDL_'))]
+    bundles_counts = len(df_bundles)
+
+    return pd.DataFrame({'Newegg - Standalone': [standalone_counts],
+                         'Newegg - Bundles': [bundles_counts]})
+#==============================================================================
+#==============================================================================
+#==============================================================================
+# Newegg Business listing counts
+def newegg_business():
+    
+    # Read in Item List Export
+    file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\NEB Item List*.csv'
+    file_path = glob.glob(file_pattern)[0]
+    df = pd.read_csv(file_path)
+
+    # Newegg Business Standalone
+    df_standalone = df[(df['Activation Mark']==True) &
+            (df['Available Quantity']>0) &
+            (df['Item Condition']=='New') &
+            (~df['Seller Part #'].str.contains('BNDL_'))]
+    standalone_counts = len(df_standalone)
+    # Newegg Business Bundles
+    df_bundles = df[(df['Activation Mark']==True) &
+            (df['Available Quantity']>0) &
+            (df['Item Condition']=='New') &
+            (df['Seller Part #'].str.contains('BNDL_'))]
+    bundles_counts = len(df_bundles)
+
+    return pd.DataFrame({'Newegg Business - Standalone': [standalone_counts],
+                         'Newegg Business - Bundles': [bundles_counts]})
+#==============================================================================
+#==============================================================================
+#==============================================================================
 
 # MAIN FUNCTION
 def main():
 
     # Define variables
-    amz_main_counts = None
-    amz_home_counts = None
-    wm_counts = None
-    ebay_counts = None
+    amz_main_counts = pd.DataFrame({})
+    amz_home_counts = pd.DataFrame({})
+    wm_counts = pd.DataFrame({})
+    ebay_counts = pd.DataFrame({})
+    ne_counts = pd.DataFrame({})
+    neb_counts = pd.DataFrame({})
 
     # Amazon Main Listing Counts
     try:
         amz_main_counts = amazon_main()
     except Exception as err:
-        print(str(err))
+        print('Amazon Main: ' + str(err))
 
     # Amazon Home Listing Counts
     try:
         amz_home_counts = amazon_home()
     except Exception as err:
-        print(str(err))
+        print('Amazon Home: ' + str(err))
 
     # Walmart Listing Counts
     try:
         wm_counts = walmart()
     except Exception as err:
-        print(str(err))
+        print('Walmart: ' + str(err))
     
     # eBay Listing Counts
     try:
         ebay_counts = ebay()
     except Exception as err:
-        print(str(err))
+        print('eBay: ' + str(err))
+
+    # Newegg Listing Counts
+    try:
+        ne_counts = newegg()
+    except Exception as err:
+        print('Newegg: ' + str(err))
+    
+    # Newegg Business Listing Counts
+    try:
+        neb_counts = newegg_business()
+    except Exception as err:
+        print('Newegg Business: ' + str(err))
 
 
     # Combine DataFrames
@@ -257,6 +323,10 @@ def main():
         df = pd.concat([df,wm_counts], axis=1)
     if len(ebay_counts)>0:
         df = pd.concat([df,ebay_counts], axis=1)
+    if len(ne_counts)>0:
+        df = pd.concat([df,ne_counts], axis=1)
+    if len(neb_counts)>0:
+        df = pd.concat([df,neb_counts], axis=1)
     
     df.to_csv('C:\\Users\\ccrin\\Desktop\\MPListingCounts.csv', index=None)
 
