@@ -268,7 +268,7 @@ def newegg_business():
 # MAIN FUNCTION
 def main():
 
-    # Define variables
+    # Define variables for scope purposes
     amz_main_counts = pd.DataFrame({})
     amz_home_counts = pd.DataFrame({})
     wm_counts = pd.DataFrame({})
@@ -276,44 +276,44 @@ def main():
     ne_counts = pd.DataFrame({})
     neb_counts = pd.DataFrame({})
 
-    # Amazon Main Listing Counts
+    # Amazon Main Listing Counts try/except (allows omitting of file in if statements)
     try:
         amz_main_counts = amazon_main()
     except Exception as err:
         print('Amazon Main: ' + str(err))
 
-    # Amazon Home Listing Counts
+    # Amazon Home Listing Counts try/except (allows omitting of file in if statements)
     try:
         amz_home_counts = amazon_home()
     except Exception as err:
         print('Amazon Home: ' + str(err))
 
-    # Walmart Listing Counts
+    # Walmart Listing Counts try/except (allows omitting of file in if statements)
     try:
         wm_counts = walmart()
     except Exception as err:
         print('Walmart: ' + str(err))
     
-    # eBay Listing Counts
+    # eBay Listing Counts try/except (allows omitting of file in if statements)
     try:
         ebay_counts = ebay()
     except Exception as err:
         print('eBay: ' + str(err))
 
-    # Newegg Listing Counts
+    # Newegg Listing Counts try/except (allows omitting of file in if statements)
     try:
         ne_counts = newegg()
     except Exception as err:
         print('Newegg: ' + str(err))
     
-    # Newegg Business Listing Counts
+    # Newegg Business Listing Counts try/except (allows omitting of file in if statements)
     try:
         neb_counts = newegg_business()
     except Exception as err:
         print('Newegg Business: ' + str(err))
 
 
-    # Combine DataFrames
+    # Combine DataFrames (only accepts if file was present in working_files directory)
     df = pd.DataFrame({})
     if len(amz_main_counts)>0:
         df = pd.concat([df,amz_main_counts], axis=1)
@@ -328,7 +328,10 @@ def main():
     if len(neb_counts)>0:
         df = pd.concat([df,neb_counts], axis=1)
     
+    # Save listing counts dataframe df to csv file on desktop for editing, emailing, & logging
     df.to_csv('C:\\Users\\ccrin\\Desktop\\MPListingCounts.csv', index=None)
+    # Return dataframe for future app implementation
+    return df
 
     print('MAIN DRIVER')
 
