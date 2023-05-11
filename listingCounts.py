@@ -266,7 +266,7 @@ def newegg_business():
 #==============================================================================
 
 # MAIN FUNCTION
-def main():
+def report():
 
     # Define variables for scope purposes
     amz_main_counts = pd.DataFrame({})
