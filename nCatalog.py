@@ -11,9 +11,11 @@ def ne_report():
     # Newegg errors
     df_errors = df[(df['Activation Mark']==False) &
             (df['Available Quantity']>0)]
-    df_errors = df_errors['Seller Part #']
-    df_errors['Restricted Msg'] = ['' for row in df_errors]
-    df_errors['Errors'] = ['' for row in df_errors]
+    
+    df_errors['Restricted Msg'] = ['' for i in df_errors['Activation Mark']]
+    df_errors['Errors'] = ['' for i in df_errors['Activation Mark']]
+    df_errors = df_errors.loc[:,['Seller Part #','Restricted Msg','Errors']]
+
 
     # create an excel writer object
     with pd.ExcelWriter("C:\\Users\\ccrin\\Desktop\\NE Catalog Report.xlsx") as writer:
@@ -34,9 +36,10 @@ def neb_report():
     # Newegg Business errors
     df_errors = df[(df['Activation Mark']==False) &
             (df['Available Quantity']>0)]
-    df_errors = df_errors['Seller Part #']
-    df_errors['Restricted Msg'] = ['' for row in df_errors]
-    df_errors['Errors'] = ['' for row in df_errors]
+    
+    df_errors['Restricted Msg'] = ['' for i in df_errors['Activation Mark']]
+    df_errors['Errors'] = ['' for i in df_errors['Activation Mark']]
+    df_errors = df_errors.loc[:,['Seller Part #','Restricted Msg','Errors']]
 
     # create an excel writer object
     with pd.ExcelWriter("C:\\Users\\ccrin\\Desktop\\NEB Catalog Report.xlsx") as writer:
