@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 import numpy as np
 
-def report():
+def report_setup():
     # Read in Speed Report Download
     file_pattern = 'C:\\Users\\ccrin\\Desktop\\working_files\\SFP Speed Report*.tsv'
     file_path = glob.glob(file_pattern)[0]
@@ -51,7 +51,13 @@ def report():
         df_standard.to_excel(writer, sheet_name='Standard', index=False)
         df_oversize.to_excel(writer, sheet_name='Oversize', index=False)
 
-        
+def report():
+    # SFP Speed Report try/except (allows omitting of task if file is not present in working_files)
+    try:
+        sfpSpeedReport = report_setup()
+    except Exception as err:
+        print('SFP Speed Report: ' + str(err) + ' - DOWNLOAD FILE COULD BE MISSING.')
+        return 'SFP Speed Report: ' + str(err)
 
 
 
