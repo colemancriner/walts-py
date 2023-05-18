@@ -1,1 +1,2 @@
-# ignore company files/reports below
+# ignore personal and company files/reports below
+config.py

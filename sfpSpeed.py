@@ -33,14 +33,22 @@ def report_setup():
     df_standard = df_standard.sort_values(by='>2day rate', ascending=False)
     df_standard = df_standard.head()
     df_standard = df_standard.loc[:,['ASIN','Total standard-size detail page views','<= 1day standard-size detail page views','<= 2day standard-size detail page views','>2 day standard-size detail page views','>2day rate']]
-
+    df_standard['Availability (amz)'] = ''
+    df_standard['Shipping Template (amz)'] = ''
+    df_standard['AZ ZIP'] = ''
+    df_standard['TX ZIP'] = ''
+    df_standard['KY ZIP'] = ''
 
     df_oversize = df[(df['Total oversize detail page views'] > 50) &
                      (df['>2day rate'] > 0.3)]
     df_oversize = df_oversize.sort_values(by='>2day rate', ascending=False)
     df_oversize = df_oversize.head()
     df_oversize = df_oversize.loc[:,['ASIN','Total oversize detail page views','<= 1day oversize detail page views','<= 2day oversize detail page views','>2 day oversize detail page views','>2day rate']]
-
+    df_oversize['Availability (amz)'] = ''
+    df_oversize['Shipping Template (amz)'] = ''
+    df_oversize['AZ ZIP'] = ''
+    df_oversize['TX ZIP'] = ''
+    df_oversize['KY ZIP'] = ''
 
     # create an excel writer object
     with pd.ExcelWriter("C:\\Users\\ccrin\\Desktop\\SFP Speed Report.xlsx") as writer:
